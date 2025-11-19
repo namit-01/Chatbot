@@ -62,7 +62,6 @@
         line-height: 1.5;
       }
 
-      /* User bubble (right) */
       .user-msg {
         background: #0b93f6;
         color: white;
@@ -70,7 +69,6 @@
         border-bottom-right-radius: 0;
       }
 
-      /* Bot bubble (left) */
       .bot-msg {
         background: #2a2a2a;
         color: #e7e7e7;
@@ -116,7 +114,23 @@
         transform: scale(0.95);
       }
 
-      /* Scrollbar styling */
+      /* Stop button */
+      #stopBtn {
+        padding: 12px 15px;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        display: none;
+      }
+
+      #stopBtn:active {
+        transform: scale(0.95);
+      }
+
+      /* Scrollbar */
       #chat-box::-webkit-scrollbar {
         width: 6px;
       }
@@ -125,7 +139,6 @@
         border-radius: 10px;
       }
 
-      /* Mobile */
       @media (max-width: 480px) {
         .chat-container {
           height: 95vh;
@@ -152,13 +165,16 @@
           required
         />
         <button id="sendBtn" type="submit">Send</button>
+        <button id="stopBtn" type="button">Stop</button>
       </form>
     </div>
 
     <script>
       const form = document.getElementById("chat-form");
       const chatBox = document.getElementById("chat-box");
+      const stopBtn = document.getElementById("stopBtn");
       let chatHistory = [];
+      let controller = null; // AbortController
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -171,11 +187,16 @@
         messageInput.value = "";
         chatBox.scrollTop = chatBox.scrollHeight;
 
+        // Create abort controller for this request
+        controller = new AbortController();
+        stopBtn.style.display = "block";
+
         try {
           const res = await fetch("/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: userMessage, chatHistory }),
+            signal: controller.signal,
           });
 
           const data = await res.json();
@@ -188,8 +209,19 @@
 
           chatBox.scrollTop = chatBox.scrollHeight;
         } catch (err) {
-          chatBox.innerHTML += `<div class="msg bot-msg">Error: ${err.message}</div>`;
+          if (err.name === "AbortError") {
+            chatBox.innerHTML += `<div class="msg bot-msg">⛔ Response stopped</div>`;
+          } else {
+            chatBox.innerHTML += `<div class="msg bot-msg">Error: ${err.message}</div>`;
+          }
+        } finally {
+          stopBtn.style.display = "none";
         }
+      });
+
+      // Stop button functionality
+      stopBtn.addEventListener("click", () => {
+        if (controller) controller.abort();
       });
     </script>
   </body>

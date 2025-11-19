@@ -14,52 +14,81 @@
 
       body {
         font-family: system-ui, Arial;
-        background: #0d0d0d;
+        background: #050505;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         padding: 10px;
+        color: white;
       }
 
+      /* Glowing floating effect */
       .chat-container {
-        background: #1a1a1a;
+        background: #111;
         width: 100%;
         max-width: 550px;
         height: 90vh;
         display: flex;
         flex-direction: column;
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
-        border: 1px solid #333;
+        border: 1px solid #222;
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.15),
+          0 0 40px rgba(0, 255, 180, 0.1);
+        animation: float 6s infinite ease-in-out;
       }
 
-      /* ChatGPT-style top bar */
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      /* Chat header */
       .chat-header {
-        background: #111;
-        color: #fff;
+        background: linear-gradient(90deg, #0b93f6, #00f0c3);
+        color: white;
         padding: 15px;
         text-align: center;
-        font-size: 20px;
-        font-weight: 600;
-        border-bottom: 1px solid #333;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        box-shadow: 0 2px 10px rgba(0, 255, 255, 0.2);
       }
 
       #chat-box {
         flex: 1;
         overflow-y: auto;
         padding: 15px;
-        background: #0d0d0d;
+        background: #0a0a0a;
       }
 
-      /* Messages */
       .msg {
         max-width: 80%;
         padding: 12px 14px;
         border-radius: 12px;
-        margin: 8px 0;
+        margin: 12px 0;
         font-size: 15px;
-        line-height: 1.5;
+        line-height: 1.6;
+        animation: fadeIn 0.35s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       .user-msg {
@@ -67,13 +96,52 @@
         color: white;
         margin-left: auto;
         border-bottom-right-radius: 0;
+        box-shadow: 0 0 10px rgba(11, 147, 246, 0.4);
       }
 
       .bot-msg {
-        background: #2a2a2a;
+        background: #1e1e1e;
         color: #e7e7e7;
         margin-right: auto;
         border-bottom-left-radius: 0;
+        box-shadow: 0 0 10px rgba(0, 255, 200, 0.2);
+        border-left: 2px solid #00ffc8;
+      }
+
+      /* Typing animation */
+      .typing-dots {
+        display: inline-block;
+        width: 30px;
+        height: 10px;
+      }
+
+      .typing-dots span {
+        width: 6px;
+        height: 6px;
+        background: #777;
+        display: inline-block;
+        border-radius: 50%;
+        margin-right: 4px;
+        animation: blink 1.4s infinite both;
+      }
+
+      .typing-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes blink {
+        0% {
+          opacity: 0.2;
+        }
+        20% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.2;
+        }
       }
 
       /* Input bar */
@@ -81,53 +149,51 @@
         display: flex;
         gap: 8px;
         padding: 12px;
-        background: #1a1a1a;
+        background: #111;
         border-top: 1px solid #333;
       }
 
       #message {
         flex: 1;
         padding: 12px;
-        border-radius: 6px;
+        border-radius: 8px;
         border: 1px solid #333;
-        background: #0d0d0d;
+        background: #090909;
         color: white;
         font-size: 16px;
-      }
-
-      #message::placeholder {
-        color: #888;
       }
 
       #sendBtn {
         padding: 12px 18px;
         border: none;
-        background: #0b93f6;
+        background: linear-gradient(90deg, #0b93f6, #00eaff);
         color: white;
         font-weight: bold;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
-        transition: 0.2s;
+        transition: 0.25s ease;
+        box-shadow: 0 0 10px rgba(11, 147, 246, 0.5);
       }
 
-      #sendBtn:active {
-        transform: scale(0.95);
+      #sendBtn:hover {
+        transform: scale(1.05);
       }
 
-      /* Stop button */
       #stopBtn {
         padding: 12px 15px;
         background: #ff4444;
         color: white;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         font-weight: bold;
         cursor: pointer;
         display: none;
+        transition: 0.2s;
       }
 
-      #stopBtn:active {
-        transform: scale(0.95);
+      #stopBtn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
       }
 
       /* Scrollbar */
@@ -140,9 +206,6 @@
       }
 
       @media (max-width: 480px) {
-        .chat-container {
-          height: 95vh;
-        }
         .msg {
           max-width: 90%;
         }
@@ -152,17 +215,15 @@
 
   <body>
     <div class="chat-container">
-      <div class="chat-header">Namit Chatbot</div>
+      <div class="chat-header">⚡ Namit AI Chatbot</div>
 
       <div id="chat-box"></div>
 
       <form id="chat-form">
         <input
-          type="text"
           id="message"
-          placeholder="Message Namit Chatbot..."
+          placeholder="Message Namit AI..."
           autocomplete="off"
-          required
         />
         <button id="sendBtn" type="submit">Send</button>
         <button id="stopBtn" type="button">Stop</button>
@@ -173,23 +234,29 @@
       const form = document.getElementById("chat-form");
       const chatBox = document.getElementById("chat-box");
       const stopBtn = document.getElementById("stopBtn");
+      let controller = null;
       let chatHistory = [];
-      let controller = null; // AbortController
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const messageInput = document.getElementById("message");
-        const userMessage = messageInput.value.trim();
+
+        const input = document.getElementById("message");
+        const userMessage = input.value.trim();
         if (!userMessage) return;
 
-        // Show user msg
         chatBox.innerHTML += `<div class="msg user-msg">${userMessage}</div>`;
-        messageInput.value = "";
+        input.value = "";
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        // Create abort controller for this request
         controller = new AbortController();
         stopBtn.style.display = "block";
+
+        // Show typing animation
+        const typingEl = document.createElement("div");
+        typingEl.className = "msg bot-msg";
+        typingEl.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+        chatBox.appendChild(typingEl);
+        chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
           const res = await fetch("/chat", {
@@ -201,7 +268,8 @@
 
           const data = await res.json();
 
-          // Show bot reply
+          typingEl.remove();
+
           chatBox.innerHTML += `<div class="msg bot-msg">${data.reply}</div>`;
 
           chatHistory.push({ role: "user", content: userMessage });
@@ -209,8 +277,9 @@
 
           chatBox.scrollTop = chatBox.scrollHeight;
         } catch (err) {
+          typingEl.remove();
           if (err.name === "AbortError") {
-            chatBox.innerHTML += `<div class="msg bot-msg">⛔ Response stopped</div>`;
+            chatBox.innerHTML += `<div class="msg bot-msg">⛔ Stopped.</div>`;
           } else {
             chatBox.innerHTML += `<div class="msg bot-msg">Error: ${err.message}</div>`;
           }
@@ -219,7 +288,6 @@
         }
       });
 
-      // Stop button functionality
       stopBtn.addEventListener("click", () => {
         if (controller) controller.abort();
       });

@@ -2,6 +2,8 @@ import express from "express";
 import fetch from "node-fetch";
 import path from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
@@ -17,7 +19,9 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Put your API key here
-const GOOGLE_API_KEY = "AIzaSyAEKLfbm88rKx5Y1UPc1kOt7QTaTB4F29Q";
+console.log("Loaded API KEY:", process.env.API_KEY);
+
+const GOOGLE_API_KEY = process.env.API_KEY;
 
 // Serve the chat page
 app.get("/", (req, res) => res.render("index"));
